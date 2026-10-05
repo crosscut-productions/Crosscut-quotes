@@ -92,15 +92,41 @@ td:last-child{text-align:right}
 
 body{padding-bottom:88px}
 @media print{body{padding-bottom:0!important}}
+
+.site-logo{
+  width:min(330px,72vw);
+  height:auto;
+  display:block;
+  object-fit:contain;
+  filter:drop-shadow(0 4px 10px rgba(0,0,0,.35));
+}
+.quote-logo{
+  width:190px;
+  max-width:42vw;
+  height:auto;
+  display:block;
+  margin-bottom:8px;
+}
+@media(max-width:650px){
+  .site-logo{width:min(280px,78vw)}
+  .quote-logo{width:150px;max-width:48vw}
+}
+@media print{
+  .quote-logo{width:170px!important;max-width:170px!important}
+}
+
 </style>
 </head>
 <body>
 <div class="app">
 
 <div class="row-between no-print">
-  <div>
-    <h1 class="brand">Crosscut Productions LLC — Pro Quote Builder</h1>
-    <div class="subtle">Built to make every quote clear, professional, easy to price, and easy for the customer to understand.</div>
+  <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+    <img src="logo.png" class="site-logo" alt="Crosscut Productions LLC logo">
+    <div>
+      <h1 class="brand" style="margin-bottom:4px">Pro Quote Builder</h1>
+      <div class="subtle">Built to make every quote clear, professional, easy to price, and easy for the customer to understand.</div>
+    </div>
   </div>
   <div class="toolbar">
     <button onclick="newQuote()">New Quote</button>
@@ -590,6 +616,7 @@ function buildPreview(){
   $('printQuote').innerHTML=`
     <div class="doc-head">
       <div>
+        <img src="logo.png" class="quote-logo" alt="Crosscut Productions LLC logo">
         <div class="doc-company">${esc(q.businessName)}</div>
         <div>${esc(q.businessPhone)}</div>
         <div>${esc(q.businessEmail)}</div>
