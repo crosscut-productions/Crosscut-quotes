@@ -1,0 +1,1742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Crosscut Productions LLC — Pro Quote Builder</title>
+<style>
+:root{
+  --bg:#0e1217; --panel:#171d24; --panel2:#202833; --text:#f7f8fa;
+  --muted:#adb6c3; --gold:#d4a64a; --line:#394451; --danger:#8d343e;
+  --ok:#2f7b4f; --blue:#325a88; --white:#fff; --ink:#111;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:linear-gradient(180deg,#0b0f14,#151b23);color:var(--text)}
+.app{max-width:1200px;margin:0 auto;padding:18px}
+h1,h2,h3{margin-top:0}
+.brand{color:var(--gold)}
+.subtle{color:var(--muted);font-size:12px;line-height:1.5}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;margin:14px 0;box-shadow:0 8px 24px rgba(0,0,0,.15)}
+.toolbar,.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.row-between{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+label{display:block;margin-bottom:5px;color:var(--muted);font-size:13px;font-weight:700}
+input,select,textarea{
+  width:100%;background:#0e1318;color:var(--text);border:1px solid var(--line);
+  border-radius:8px;padding:10px;font:inherit
+}
+textarea{min-height:84px;resize:vertical}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold)}
+button{
+  border:1px solid var(--line);background:var(--panel2);color:#fff;border-radius:8px;
+  padding:10px 13px;font-weight:700;cursor:pointer
+}
+button:hover{border-color:var(--gold)}
+.primary{background:var(--gold);color:#111;border-color:var(--gold)}
+.success{background:#1f5135;border-color:#2f7b4f}
+.blue{background:#203d60;border-color:#325a88}
+.danger{background:#3d2025;border-color:#71343c}
+.scope-item{background:#121820;border:1px solid var(--line);border-radius:12px;padding:14px;margin:12px 0}
+.scope-title{color:var(--gold);font-weight:800}
+.checkline{display:flex;align-items:center;gap:8px}
+.checkline input{width:auto}
+.preview{max-width:180px;max-height:125px;border-radius:7px;border:1px solid var(--line);display:none;margin-top:8px}
+.summary{display:grid;grid-template-columns:1fr 390px;gap:16px}
+table{width:100%;border-collapse:collapse}
+td,th{padding:8px 5px;border-bottom:1px solid var(--line);vertical-align:top}
+td:last-child{text-align:right}
+.big-total{font-size:21px;color:var(--gold);font-weight:800}
+.internal{background:#18170f;border:1px dashed #806d3d}
+.internal h3{color:var(--gold)}
+.saved{display:grid;grid-template-columns:1fr auto auto auto;gap:8px;align-items:end}
+.status{min-height:18px;color:var(--muted);font-size:12px;margin-top:7px}
+.tax-note{padding:10px;border:1px solid #4f5a68;border-radius:9px;background:#121820}
+.badge{display:inline-block;padding:3px 7px;border-radius:999px;background:#29313b;color:#d7dde5;font-size:11px}
+.quick-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.quick-grid button{font-size:12px;padding:8px}
+.print-doc{background:#fff;color:#111;padding:28px;border-radius:12px;margin-top:18px}
+.doc-head{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;border-bottom:3px solid #d4a64a;padding-bottom:14px;margin-bottom:18px}
+.doc-company{font-size:24px;font-weight:800}
+.doc-title{font-size:28px;font-weight:900;text-align:right}
+.print-doc .muted{color:#555}
+.print-doc table{color:#111}
+.print-doc td,.print-doc th{border-bottom:1px solid #ddd;padding:8px}
+.print-doc th{background:#f4f4f4}
+.right{text-align:right!important}
+.doc-photo{max-width:150px;max-height:110px;border-radius:6px;margin-top:6px}
+.terms{white-space:pre-wrap;line-height:1.45}
+.signatures{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:38px}
+.sigline{border-top:1px solid #333;padding-top:6px;color:#555;font-size:12px}
+.preview-section{margin-top:24px}
+.customer-box{border:1px solid #ddd;border-radius:8px;padding:12px;background:#fafafa}
+.pill{display:inline-block;padding:4px 9px;border-radius:999px;background:#eef1f4;font-size:11px;color:#333;margin:2px 4px 2px 0}
+.strongbox{border:2px solid #d4a64a;border-radius:8px;padding:12px;margin:14px 0;background:#fffdf7}
+@media(max-width:900px){
+  .grid3,.grid4,.summary,.quick-grid{grid-template-columns:1fr 1fr}
+  .summary{grid-template-columns:1fr}
+  .saved{grid-template-columns:1fr 1fr}
+}
+@media(max-width:650px){
+  .grid2,.grid3,.grid4,.quick-grid,.saved{grid-template-columns:1fr}
+  .app{padding:10px}.print-doc{padding:16px}.doc-head{display:block}.doc-title{text-align:left;margin-top:14px}
+}
+@media print{
+  body{background:#fff}
+  .no-print,.internal{display:none!important}
+  .app{max-width:none;padding:0}
+  .print-doc{margin:0;padding:0;border-radius:0}
+  @page{size:Letter;margin:.45in}
+}
+
+body{padding-bottom:88px}
+@media print{body{padding-bottom:0!important}}
+
+.site-logo{
+  width:min(330px,72vw);
+  height:auto;
+  display:block;
+  object-fit:contain;
+  filter:drop-shadow(0 4px 10px rgba(0,0,0,.35));
+}
+.quote-logo{
+  width:190px;
+  max-width:42vw;
+  height:auto;
+  display:block;
+  margin-bottom:8px;
+}
+@media(max-width:650px){
+  .site-logo{width:min(280px,78vw)}
+  .quote-logo{width:150px;max-width:48vw}
+}
+@media print{
+  .quote-logo{width:170px!important;max-width:170px!important}
+}
+
+
+.tax-tracker-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.tax-summary-box{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:14px
+}
+.tax-stat{background:#10161d;border:1px solid var(--line);border-radius:10px;padding:12px}
+.tax-stat small{display:block;color:var(--muted);margin-bottom:5px}
+.tax-stat strong{font-size:18px;color:var(--gold)}
+.tax-records{width:100%;border-collapse:collapse;margin-top:12px}
+.tax-records th,.tax-records td{padding:8px;border-bottom:1px solid var(--line);font-size:12px;text-align:left}
+.tax-records th{color:var(--muted)}
+.tax-records td:last-child,.tax-records th:last-child{text-align:right}
+@media(max-width:850px){
+  .tax-tracker-grid,.tax-summary-box{grid-template-columns:1fr 1fr}
+}
+@media(max-width:560px){
+  .tax-tracker-grid,.tax-summary-box{grid-template-columns:1fr}
+}
+
+
+.biz-office{border:2px solid #6a5729;background:linear-gradient(180deg,#171d24,#12171d)}
+.biz-office-title{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.private-badge{background:#6a5729;color:#fff4cf;padding:5px 9px;border-radius:999px;font-size:11px;font-weight:800}
+.biz-metrics{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:9px;margin:12px 0}
+.biz-metric{background:#0e141a;border:1px solid var(--line);border-radius:10px;padding:11px}
+.biz-metric small{display:block;color:var(--muted);font-size:11px;margin-bottom:5px}
+.biz-metric strong{font-size:17px;color:var(--gold)}
+.biz-form{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.biz-section{margin-top:18px;border-top:1px solid var(--line);padding-top:16px}
+.biz-section h3{margin-bottom:10px}
+.biz-table-wrap{overflow-x:auto;margin-top:10px}
+.biz-table{width:100%;min-width:760px;border-collapse:collapse}
+.biz-table th,.biz-table td{padding:8px;border-bottom:1px solid var(--line);font-size:12px;text-align:left;vertical-align:top}
+.biz-table th{color:var(--muted);font-weight:700;background:#121820}
+.biz-table td:last-child,.biz-table th:last-child{text-align:right}
+.receipt-thumb{width:58px;height:58px;object-fit:cover;border-radius:7px;border:1px solid var(--line);cursor:pointer}
+.biz-empty{color:var(--muted);padding:12px 4px}
+.status-pill{display:inline-block;padding:4px 8px;border-radius:999px;font-size:11px;font-weight:800;background:#29313b}
+.biz-warning{font-size:12px;color:var(--muted);line-height:1.45;margin-top:8px}
+@media(max-width:950px){
+  .biz-metrics{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .biz-form{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:600px){
+  .biz-metrics,.biz-form{grid-template-columns:1fr}
+}
+
+
+.scope-photo-gallery{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:8px;
+  margin-top:9px;
+}
+.scope-photo-card{
+  position:relative;
+  border:1px solid var(--line);
+  border-radius:9px;
+  overflow:hidden;
+  background:#0d1217;
+  min-height:90px;
+}
+.scope-photo-card img{
+  width:100%;
+  height:110px;
+  object-fit:cover;
+  display:block;
+}
+.scope-photo-remove{
+  position:absolute;
+  right:5px;
+  top:5px;
+  width:30px;
+  height:30px;
+  border-radius:999px;
+  padding:0;
+  background:rgba(70,20,25,.92);
+  border:1px solid rgba(255,255,255,.35);
+}
+.photo-count{
+  margin-top:6px;
+  color:var(--muted);
+  font-size:11px;
+}
+.doc-photo-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:7px;
+  margin-top:8px;
+  max-width:500px;
+}
+.doc-photo-grid .doc-photo{
+  width:100%;
+  max-width:none;
+  height:150px;
+  object-fit:cover;
+  margin:0;
+}
+@media(max-width:650px){
+  .scope-photo-gallery{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media print{
+  .doc-photo-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    page-break-inside:avoid;
+    break-inside:avoid;
+  }
+  .doc-photo-grid .doc-photo{
+    height:135px;
+  }
+}
+
+</style>
+</head>
+<body>
+<div class="app">
+
+<div class="row-between no-print">
+  <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+    <img src="logo.png" class="site-logo" alt="Crosscut Productions LLC logo">
+    <div>
+      <h1 class="brand" style="margin-bottom:4px">Pro Quote Builder</h1>
+      <div class="subtle">Built to make every quote clear, professional, easy to price, and easy for the customer to understand.</div>
+    </div>
+  </div>
+  <div class="toolbar">
+    <button onclick="newQuote()">New Quote</button>
+    <button class="success" onclick="saveQuote()">Save Quote</button>
+    <button class="blue" onclick="duplicateQuote()">Duplicate Quote</button>
+    <button class="primary" onclick="window.print()">Print / Save PDF</button>
+  </div>
+</div>
+
+<div class="card no-print">
+  <h3>Saved Quotes</h3>
+  <div class="saved">
+    <div>
+      <label>Saved quote</label>
+      <select id="savedQuotes"></select>
+    </div>
+    <button onclick="loadSelected()">Load</button>
+    <button onclick="duplicateSelected()">Copy</button>
+    <button class="danger" onclick="deleteSelected()">Delete</button>
+  </div>
+  <div id="status" class="status"></div>
+</div>
+
+<div class="card no-print">
+  <h2>1. Business & Quote Information</h2>
+  <div class="grid4">
+    <div>
+      <label>Quote Profile</label>
+      <select id="quoteProfile" onchange="applyQuoteProfile(this.value,true)">
+        <option value="alex">Alex Arthur — Handyman / Property Services</option>
+        <option value="brittany">Brittany Arthur — Photography / Organization / Cleaning</option>
+      </select>
+    </div>
+    <div><label>Business Name</label><input id="businessName" value="Crosscut Productions LLC"></div>
+    <div><label>Prepared By</label><input id="preparedBy" value="Alex Arthur" readonly></div>
+    <div><label>Phone</label><input id="businessPhone" value="304-590-0472" readonly></div>
+    <div><label>Business Email</label><input id="businessEmail" placeholder="your business email"></div>
+
+    <div><label>Quote Number</label><input id="quoteNumber"></div>
+    <div><label>Quote Date</label><input id="quoteDate" type="date"></div>
+    <div><label>Valid For (days)</label><input id="validDays" type="number" min="1" value="30"></div>
+    <div>
+      <label>Status</label>
+      <select id="quoteStatus">
+        <option>Draft</option>
+        <option>Quote Sent</option>
+        <option>Approved</option>
+        <option>Scheduled</option>
+        <option>In Progress</option>
+        <option>Completed</option>
+        <option>Paid</option>
+        <option>Declined</option>
+      </select>
+    </div>
+
+    <div><label>Estimated Start Date</label><input id="startDate" type="date"></div>
+    <div><label>Estimated Completion Date</label><input id="completionDate" type="date"></div>
+    <div><label>Estimated Duration</label><input id="duration" placeholder="Example: 2–3 days"></div>
+    <div><label>Warranty</label><input id="warranty" placeholder="Example: 1 year workmanship"></div>
+  </div>
+</div>
+
+<div class="card no-print">
+  <h2>2. Customer & Job Information</h2>
+  <div class="grid2">
+    <div><label>Customer Name</label><input id="customerName"></div>
+    <div><label>Customer Phone</label><input id="customerPhone"></div>
+    <div><label>Customer Email</label><input id="customerEmail"></div>
+    <div>
+      <label>Job Type</label>
+      <select id="jobType">
+        <option>Handyman Services</option><option>Welding & Fabrication</option>
+        <option>Flooring</option><option>Siding</option><option>Decking</option>
+        <option>Painting</option><option>Roofing</option><option>Property Clean Up</option>
+        <option>Property Repairs</option><option>Pressure Washing</option>
+        <option>Skid Steer Work</option><option>Landscaping</option><option>Other</option>
+      </select>
+    </div>
+    <div style="grid-column:1/-1"><label>Job Address</label><input id="jobAddress"></div>
+  </div>
+</div>
+
+<div class="card no-print">
+  <h2 id="quickAddHeading">3. Quick Add Common Work</h2>
+  <div class="subtle" style="margin-bottom:10px">Tap one and it adds a ready-to-edit scope item.</div>
+  <div class="quick-grid" id="quickAddGrid">
+    <button onclick="quickAdd('Deck Repair','Remove damaged boards as needed, install replacement decking, fasten securely, and clean work area.')">Deck Repair</button>
+    <button onclick="quickAdd('Siding Repair','Remove damaged siding as needed, install replacement siding, secure and seal as required, and clean work area.')">Siding Repair</button>
+    <button onclick="quickAdd('Flooring','Prepare area, install flooring per manufacturer requirements, install required trim/transitions, and clean work area.')">Flooring</button>
+    <button onclick="quickAdd('Painting','Protect surrounding surfaces, prepare area, apply agreed coating system, and complete final cleanup.')">Painting</button>
+    <button onclick="quickAdd('Pressure Washing','Pressure wash agreed surfaces, treating heavy buildup where practical and rinsing surrounding areas.')">Pressure Washing</button>
+    <button onclick="quickAdd('Property Cleanup','Remove agreed debris/material, load out, haul away if included, and leave work area broom-clean.')">Property Cleanup</button>
+    <button onclick="quickAdd('Welding & Fabrication','Fabricate and/or repair agreed metal components, weld as required, grind/finish where specified, and verify fit.')">Welding</button>
+    <button onclick="quickAdd('Skid Steer Work','Provide skid steer and operator for agreed grading, material movement, cleanup, or light excavation work.')">Skid Steer</button>
+  </div>
+</div>
+
+<div class="card no-print">
+  <div class="row-between">
+    <div>
+      <h2 style="margin-bottom:3px">4. Scope of Work</h2>
+      <div class="subtle">Each item tells the customer exactly what they are getting. Internal cost fields never print.</div>
+    </div>
+    <button class="primary" onclick="addScopeItem()">+ Add Scope Item</button>
+  </div>
+  <div id="scopeItems"></div>
+</div>
+
+<div class="card no-print">
+  <h2>5. What Is Included / Not Included</h2>
+  <div class="grid2">
+    <div>
+      <label>Included in This Quote</label>
+      <textarea id="included" placeholder="Example: labor, listed materials, cleanup, haul-off, equipment, delivery, etc."></textarea>
+    </div>
+    <div>
+      <label>Not Included / Exclusions</label>
+      <textarea id="excluded" placeholder="Example: hidden damage, permits, electrical/plumbing, upgraded materials, unforeseen structural repair, etc."></textarea>
+    </div>
+    <div>
+      <label>Customer Responsibilities</label>
+      <textarea id="customerResponsibilities" placeholder="Example: provide clear access, move personal items, approve colors/materials, provide water/power if needed, etc."></textarea>
+    </div>
+    <div>
+      <label>Cleanup / Disposal</label>
+      <textarea id="cleanup" placeholder="Example: daily cleanup included; haul-off included/not included; dumpster by customer, etc."></textarea>
+    </div>
+  </div>
+</div>
+
+<div class="card no-print">
+  <h2>6. Pricing, Deposit & Sales Tax</h2>
+  <div class="grid4">
+    <div>
+      <label>Operational / Overhead Markup %</label>
+      <input id="overheadPct" type="number" step=".1" min="0" value="0" oninput="recalc()">
+    </div>
+
+    <div>
+      <label>Discount $</label>
+      <input id="discount" type="number" step=".01" min="0" value="0" oninput="recalc()">
+    </div>
+
+    <div>
+      <label>Sales Tax Rate</label>
+      <select id="taxPreset" onchange="taxPresetChanged()">
+        <option value="0">0% — No sales tax</option>
+        <option value="6" selected>6% — WV state tax</option>
+        <option value="7">7% — WV + local tax</option>
+        <option value="custom">Custom rate</option>
+      </select>
+    </div>
+
+    <div id="customTaxWrap" style="display:none">
+      <label>Custom Sales Tax %</label>
+      <input id="customTaxPct" type="number" step=".01" min="0" value="6" oninput="recalc()">
+    </div>
+
+    <div>
+      <label>Sales Tax Applies To</label>
+      <select id="taxMode" onchange="recalc()">
+        <option value="items">Only scope items marked taxable</option>
+        <option value="all">Entire quote after markup/discount</option>
+      </select>
+    </div>
+
+    <div>
+      <label>Deposit Type</label>
+      <select id="depositType" onchange="recalc()">
+        <option value="dollar">Dollar amount</option>
+        <option value="percent">Percentage of total</option>
+      </select>
+    </div>
+
+    <div>
+      <label>Deposit Amount / %</label>
+      <input id="depositValue" type="number" step=".01" min="0" value="0" oninput="recalc()">
+    </div>
+
+    <div>
+      <label>Federal Tax Reserve % <span class="badge">INTERNAL</span></label>
+      <input id="federalReservePct" type="number" step=".1" min="0" value="30" oninput="recalc()">
+    </div>
+  </div>
+
+  <div class="tax-note" style="margin-top:14px">
+    <strong>Adjustable sales tax:</strong> choose 0%, 6%, 7%, or any custom rate. Each scope item also has a Taxable checkbox, so mixed jobs are easy.
+  </div>
+</div>
+
+<div class="summary no-print">
+  <div class="card">
+    <h3>Customer Quote Totals</h3>
+    <table>
+      <tr><td>Scope subtotal</td><td id="uiSubtotal">$0.00</td></tr>
+      <tr><td>Operational / overhead markup</td><td id="uiOverhead">$0.00</td></tr>
+      <tr><td>Discount</td><td id="uiDiscount">$0.00</td></tr>
+      <tr><td>Taxable amount</td><td id="uiTaxable">$0.00</td></tr>
+      <tr><td>Sales tax</td><td id="uiSalesTax">$0.00</td></tr>
+      <tr><td class="big-total">Customer total</td><td class="big-total" id="uiTotal">$0.00</td></tr>
+      <tr><td>Deposit requested</td><td id="uiDeposit">$0.00</td></tr>
+      <tr><td>Balance after deposit</td><td id="uiBalance">$0.00</td></tr>
+    </table>
+  </div>
+
+  <div class="card internal">
+    <h3>Internal Job Numbers</h3>
+    <table>
+      <tr><td>Your estimated job costs</td><td id="uiCosts">$0.00</td></tr>
+      <tr><td>Estimated gross profit</td><td id="uiProfit">$0.00</td></tr>
+      <tr><td>Federal tax reserve</td><td id="uiFederal">$0.00</td></tr>
+      <tr><td><strong>Estimated after reserve</strong></td><td id="uiAfter"><strong>$0.00</strong></td></tr>
+      <tr><td>Estimated gross margin</td><td id="uiMargin">0%</td></tr>
+    </table>
+    <div class="subtle" style="margin-top:8px">This entire box is hidden from the customer printout.</div>
+  </div>
+</div>
+
+
+
+<div class="card no-print biz-office" id="businessOffice">
+  <div class="row-between">
+    <div>
+      <div class="biz-office-title">
+        <h2 style="margin:0">Business Only — Job Manager</h2>
+        <span class="private-badge">PRIVATE • DOES NOT PRINT</span>
+      </div>
+      <div class="subtle" style="margin-top:5px">
+        Track jobs, payments, balances, expenses, receipt photos, mileage, and job status in one place.
+      </div>
+    </div>
+    <div class="toolbar">
+      <button class="primary" type="button" onclick="saveCurrentQuoteAsBusinessJob()">Save / Update Current Quote as Job</button>
+      <button type="button" onclick="downloadBusinessCSV()">Download Business CSV</button>
+    </div>
+  </div>
+
+  <div class="grid3" style="margin-top:14px">
+    <div>
+      <label>Select Business Job</label>
+      <select id="bizJobSelect" onchange="selectBusinessJob(this.value)"></select>
+    </div>
+    <div>
+      <label>Job Status</label>
+      <select id="bizJobStatus" onchange="updateBusinessJobStatus()">
+        <option>Quote Sent</option>
+        <option>Approved</option>
+        <option>Scheduled</option>
+        <option>In Progress</option>
+        <option>Completed</option>
+        <option>Paid</option>
+      </select>
+    </div>
+    <div style="display:flex;align-items:end">
+      <button class="danger" type="button" style="width:100%" onclick="deleteSelectedBusinessJob()">Delete Selected Business Job</button>
+    </div>
+  </div>
+
+  <div id="bizJobHeading" class="subtle" style="margin-top:10px">No business job selected.</div>
+
+  <div class="biz-metrics">
+    <div class="biz-metric"><small>Quote Total</small><strong id="bizMetricQuote">$0.00</strong></div>
+    <div class="biz-metric"><small>Payments Received</small><strong id="bizMetricPaid">$0.00</strong></div>
+    <div class="biz-metric"><small>Balance Due</small><strong id="bizMetricBalance">$0.00</strong></div>
+    <div class="biz-metric"><small>Expenses</small><strong id="bizMetricExpenses">$0.00</strong></div>
+    <div class="biz-metric"><small>Est. Profit Before Tax</small><strong id="bizMetricProfit">$0.00</strong></div>
+    <div class="biz-metric"><small>Business Miles</small><strong id="bizMetricMiles">0.0</strong></div>
+  </div>
+
+  <div class="biz-section">
+    <h3>Payments</h3>
+    <div class="biz-form">
+      <div><label>Date Paid</label><input id="bizPaymentDate" type="date"></div>
+      <div><label>Amount Paid</label><input id="bizPaymentAmount" type="number" min="0" step=".01" value="0"></div>
+      <div>
+        <label>Payment Method</label>
+        <select id="bizPaymentMethod">
+          <option>Cash</option><option>Check</option><option>Card</option><option>Cash App</option>
+          <option>PayPal</option><option>Venmo</option><option>Bank Transfer</option><option>Other</option>
+        </select>
+      </div>
+      <div><label>Payment Note</label><input id="bizPaymentNote" placeholder="Deposit, final payment, etc."></div>
+      <div style="display:flex;align-items:end"><button class="success" style="width:100%" type="button" onclick="addBusinessPayment()">Add Payment</button></div>
+    </div>
+    <div class="biz-table-wrap">
+      <table class="biz-table">
+        <thead><tr><th>Date</th><th>Amount</th><th>Method</th><th>Note</th><th></th></tr></thead>
+        <tbody id="bizPaymentsRows"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="biz-section">
+    <h3>Expenses & Receipt Photos</h3>
+    <div class="biz-form">
+      <div><label>Date</label><input id="bizExpenseDate" type="date"></div>
+      <div>
+        <label>Expense Type</label>
+        <select id="bizExpenseCategory">
+          <option>Materials</option>
+          <option>Tool / Equipment Rental</option>
+          <option>Subcontractor</option>
+          <option>Fuel / Vehicle</option>
+          <option>Dump / Disposal</option>
+          <option>Advertising / Marketing</option>
+          <option>Insurance</option>
+          <option>Licenses / Fees</option>
+          <option>Software / Phone</option>
+          <option>Small Tools / Supplies</option>
+          <option>Equipment Repair / Maintenance</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div><label>Amount</label><input id="bizExpenseAmount" type="number" min="0" step=".01" value="0"></div>
+      <div><label>Vendor / What For</label><input id="bizExpenseVendor" placeholder="Lowe's, tool rental, lumber, etc."></div>
+      <div>
+        <label>Receipt Picture</label>
+        <input id="bizExpenseReceipt" type="file" accept="image/*" capture="environment">
+      </div>
+      <div style="grid-column:1/-1"><label>Expense Notes</label><input id="bizExpenseNote" placeholder="Optional details"></div>
+      <div style="grid-column:1/-1"><button class="success" type="button" onclick="addBusinessExpense()">Add Expense</button></div>
+    </div>
+    <div class="biz-warning">Receipt pictures are saved privately in this browser/device and are never shown on the customer quote.</div>
+    <div class="biz-table-wrap">
+      <table class="biz-table">
+        <thead><tr><th>Date</th><th>Type</th><th>Vendor / What For</th><th>Amount</th><th>Receipt</th><th>Notes</th><th></th></tr></thead>
+        <tbody id="bizExpensesRows"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="biz-section">
+    <h3>Mileage</h3>
+    <div class="biz-form">
+      <div><label>Date</label><input id="bizMileageDate" type="date"></div>
+      <div><label>Miles</label><input id="bizMileageMiles" type="number" min="0" step=".1" value="0"></div>
+      <div style="grid-column:span 2"><label>Purpose / Where You Went</label><input id="bizMileagePurpose" placeholder="Pick up materials, estimate, job site, dump run, etc."></div>
+      <div style="display:flex;align-items:end"><button class="success" style="width:100%" type="button" onclick="addBusinessMileage()">Add Mileage</button></div>
+    </div>
+    <div class="biz-table-wrap">
+      <table class="biz-table">
+        <thead><tr><th>Date</th><th>Miles</th><th>Purpose</th><th></th></tr></thead>
+        <tbody id="bizMileageRows"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+
+<div class="card no-print" id="simpleTaxTracker">
+  <div class="row-between">
+    <div>
+      <h2 style="margin-bottom:4px">Simple Paid-Job / Tax Tracker</h2>
+      <div class="subtle">When a job is actually paid, use the quote numbers, correct the actual expenses if needed, then tap Record Paid Job. This never prints on the customer's quote.</div>
+    </div>
+    <button class="blue" type="button" onclick="fillTrackerFromQuote()">Use Current Quote Numbers</button>
+  </div>
+
+  <div class="tax-tracker-grid" style="margin-top:14px">
+    <div>
+      <label>Date Paid</label>
+      <input id="taxTrackDate" type="date">
+    </div>
+    <div>
+      <label>Job Income Before Sales Tax</label>
+      <input id="taxTrackIncome" type="number" min="0" step=".01" value="0">
+    </div>
+    <div>
+      <label>Sales Tax Collected</label>
+      <input id="taxTrackSalesTax" type="number" min="0" step=".01" value="0">
+    </div>
+    <div>
+      <label>Total Actual Job Expenses</label>
+      <input id="taxTrackExpenses" type="number" min="0" step=".01" value="0">
+    </div>
+    <div>
+      <label>Receipt / Notes</label>
+      <input id="taxTrackNotes" placeholder="Receipts saved, tool rental, etc.">
+    </div>
+  </div>
+
+  <div class="toolbar" style="margin-top:12px">
+    <button class="success" type="button" onclick="recordPaidJob()">Record Paid Job</button>
+    <button type="button" onclick="downloadTaxCSV()">Download Tax Records CSV</button>
+    <button class="danger" type="button" onclick="clearTaxTracker()">Clear All Tax Records</button>
+  </div>
+
+  <div class="tax-summary-box">
+    <div class="tax-stat"><small>Total Job Income</small><strong id="trackTotalIncome">$0.00</strong></div>
+    <div class="tax-stat"><small>Sales Tax to Hold</small><strong id="trackTotalSalesTax">$0.00</strong></div>
+    <div class="tax-stat"><small>Total Business Expenses</small><strong id="trackTotalExpenses">$0.00</strong></div>
+    <div class="tax-stat"><small>Estimated Profit</small><strong id="trackTotalProfit">$0.00</strong></div>
+    <div class="tax-stat"><small>Federal / SE Reserve</small><strong id="trackFederalReserve">$0.00</strong></div>
+    <div class="tax-stat"><small>TOTAL TAX MONEY TO HOLD</small><strong id="trackTotalHold">$0.00</strong></div>
+  </div>
+
+  <div style="overflow-x:auto">
+    <table class="tax-records">
+      <thead>
+        <tr>
+          <th>Date</th><th>Quote / Customer</th><th>Income</th><th>Sales Tax</th><th>Expenses</th><th>Profit</th><th>Federal Reserve</th><th></th>
+        </tr>
+      </thead>
+      <tbody id="taxRecordRows"></tbody>
+    </table>
+  </div>
+</div>
+
+<div class="card no-print">
+  <h2>7. Payment, Change Orders & Terms</h2>
+  <div class="grid2">
+    <div>
+      <label>Payment Terms</label>
+      <select id="paymentTerms">
+        <option>Deposit due before work begins; remaining balance due upon completion</option>
+        <option>Balance due upon completion</option>
+        <option>50% deposit; balance due upon completion</option>
+        <option>Payment due upon receipt</option>
+        <option>Net 15</option><option>Net 30</option><option>Custom — see notes</option>
+      </select>
+    </div>
+    <div>
+      <label>Accepted Payment Methods</label>
+      <input id="paymentMethods" value="Cash, check, or other agreed payment method">
+    </div>
+
+    <div style="grid-column:1/-1">
+      <label>Change Order Policy</label>
+      <textarea id="changeOrder">Any work requested outside the written scope of this quote, or additional work required due to hidden or unforeseen conditions, must be approved before proceeding and may change the total price and completion time.</textarea>
+    </div>
+
+    <div style="grid-column:1/-1">
+      <label>General Terms / Notes</label>
+      <textarea id="terms">This quote is based on the visible conditions and scope of work listed above. Customer approval authorizes Crosscut Productions LLC to perform the described work. Deposit, if shown, is due before work begins. Final payment is due according to the payment terms shown on this quote.</textarea>
+    </div>
+  </div>
+</div>
+
+<div class="card no-print">
+  <h2>8. Customer-Facing Preview</h2>
+  <div class="subtle">This is what prints or saves as PDF. Internal costs, profit, and federal tax reserve are hidden.</div>
+</div>
+
+<div id="printQuote" class="print-doc"></div>
+</div>
+
+<script>
+let itemCounter=0;
+const $=id=>document.getElementById(id);
+
+function money(v){return new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(Number(v)||0)}
+function esc(s=''){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+function todayISO(){const d=new Date(),off=d.getTimezoneOffset();return new Date(d.getTime()-off*60000).toISOString().slice(0,10)}
+function makeQuoteNumber(){return 'CP-'+todayISO().replaceAll('-','')+'-'+String(Date.now()).slice(-4)}
+function currentTaxRate(){const p=$('taxPreset').value;return p==='custom'?((parseFloat($('customTaxPct').value)||0)/100):((parseFloat(p)||0)/100)}
+function taxPresetChanged(){$('customTaxWrap').style.display=$('taxPreset').value==='custom'?'block':'none';recalc()}
+
+
+const QUOTE_PROFILES = {
+  alex: {
+    name:'Alex Arthur', phone:'304-590-0472',
+    heading:'3. Quick Add Handyman / Property Work',
+    jobTypes:['Handyman Services','Welding & Fabrication','Flooring','Siding','Decking','Painting','Roofing','Property Clean Up','Property Repairs','Pressure Washing','Skid Steer Work','Landscaping','Other'],
+    quickAdds:[
+      ['Deck Repair','Remove damaged boards as needed, install replacement decking, fasten securely, and clean work area.'],
+      ['Siding Repair','Remove damaged siding as needed, install replacement siding, secure and seal as required, and clean work area.'],
+      ['Flooring','Prepare area, install flooring per manufacturer requirements, install required trim/transitions, and clean work area.'],
+      ['Painting','Protect surrounding surfaces, prepare area, apply agreed coating system, and complete final cleanup.'],
+      ['Pressure Washing','Pressure wash agreed surfaces, treating heavy buildup where practical and rinsing surrounding areas.'],
+      ['Property Cleanup','Remove agreed debris/material, load out, haul away if included, and leave work area broom-clean.'],
+      ['Welding & Fabrication','Fabricate and/or repair agreed metal components, weld as required, grind/finish where specified, and verify fit.'],
+      ['Skid Steer Work','Provide skid steer and operator for agreed grading, material movement, cleanup, or light excavation work.']
+    ]
+  },
+  brittany: {
+    name:'Brittany Arthur', phone:'304-380-5140',
+    heading:'3. Quick Add Photography / Organization / Cleaning',
+    jobTypes:[
+      'Photography — Family Session','Photography — Couples','Photography — Children',
+      'Photography — Sports','Photography — Portraits','Photography — Senior Photos',
+      'Photography — Events','Home Organization','Small Business Organization & Planning',
+      'Cleaning Services','Other'
+    ],
+    quickAdds:[
+      ['Family Photography Session','Photography session for the agreed family members, location, date, and session length. Includes agreed edited digital images and delivery method listed in the scope notes.'],
+      ['Sports Photography','Photograph the agreed athlete, team, game, or event. Includes the coverage and edited image delivery described in the scope notes.'],
+      ['Senior Photos','Senior portrait session at the agreed location(s), including session time, outfit/location details, and edited digital images listed in the scope notes.'],
+      ['Event Photography','Photography coverage for the agreed event, date, location, and coverage window, with edited image delivery as described in the scope notes.'],
+      ['Portrait Session','Portrait session for the agreed person(s), location, session length, and edited digital image delivery described in the scope notes.'],
+      ['Home Organization','Organize the agreed rooms, closets, storage areas, or household spaces according to the written scope. Disposal, donation hauling, and storage products are included only if specifically listed.'],
+      ['Small Business Organization','Organize the agreed workspace, inventory, files, supplies, scheduling, or basic administrative workflow according to the written scope.'],
+      ['Cleaning Services','Clean the agreed rooms/areas and surfaces listed in the scope. Deep-clean items, appliances, windows, haul-off, or specialty cleaning are included only if specifically listed.']
+    ]
+  }
+};
+
+function renderQuickAdds(profileKey){
+  const p=QUOTE_PROFILES[profileKey]||QUOTE_PROFILES.alex;
+  $('quickAddHeading').textContent=p.heading;
+  const grid=$('quickAddGrid'); grid.innerHTML='';
+  p.quickAdds.forEach(([title,desc])=>{
+    const b=document.createElement('button');
+    b.type='button'; b.textContent=title; b.onclick=()=>quickAdd(title,desc);
+    grid.appendChild(b);
+  });
+}
+function renderJobTypes(profileKey,preferred=''){
+  const p=QUOTE_PROFILES[profileKey]||QUOTE_PROFILES.alex;
+  const s=$('jobType'); s.innerHTML='';
+  p.jobTypes.forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v;s.appendChild(o)});
+  if(preferred && p.jobTypes.includes(preferred)) s.value=preferred;
+}
+function applyQuoteProfile(profileKey,userChanged=false,preferredJobType=''){
+  const key=QUOTE_PROFILES[profileKey]?profileKey:'alex', p=QUOTE_PROFILES[key];
+  $('quoteProfile').value=key;
+  $('preparedBy').value=p.name;
+  $('businessPhone').value=p.phone;
+  renderJobTypes(key,preferredJobType);
+  renderQuickAdds(key);
+  if(userChanged) recalc(); else buildPreview();
+}
+
+
+
+const BUSINESS_JOBS_KEY='crosscutBusinessJobsV1';
+let currentBusinessJobId='';
+
+function getBusinessJobs(){
+  try{return JSON.parse(localStorage.getItem(BUSINESS_JOBS_KEY)||'[]')}catch(e){return []}
+}
+function saveBusinessJobs(jobs){
+  localStorage.setItem(BUSINESS_JOBS_KEY,JSON.stringify(jobs));
+  renderBusinessJobList();
+  renderBusinessJob();
+}
+function makeBusinessEntryId(prefix){
+  return prefix+'-'+Date.now()+'-'+Math.random().toString(36).slice(2,8);
+}
+function businessStatusFromQuoteStatus(s){
+  const map={'Sent':'Quote Sent','Quote Sent':'Quote Sent','Approved':'Approved','Scheduled':'Scheduled','In Progress':'In Progress','Completed':'Completed','Paid':'Paid'};
+  return map[s]||'Quote Sent';
+}
+function selectedBusinessJob(){
+  return getBusinessJobs().find(j=>j.id===currentBusinessJobId)||null;
+}
+function saveCurrentQuoteAsBusinessJob(){
+  const q=allData(), c=calculate();
+  if(!q.quoteNumber){
+    $('quoteNumber').value=makeQuoteNumber();
+    q.quoteNumber=$('quoteNumber').value;
+  }
+  let jobs=getBusinessJobs();
+  let job=jobs.find(j=>j.id===q.quoteNumber);
+
+  if(!job){
+    job={
+      id:q.quoteNumber,
+      quoteNumber:q.quoteNumber,
+      customer:q.customerName||'No customer name',
+      owner:q.preparedBy||'',
+      phone:q.businessPhone||'',
+      jobType:q.jobType||'',
+      address:q.jobAddress||'',
+      quoteTotal:c.total||0,
+      salesTax:c.salesTax||0,
+      quoteBeforeTax:c.beforeTax||0,
+      status:businessStatusFromQuoteStatus(q.quoteStatus),
+      payments:[],
+      expenses:[],
+      mileage:[],
+      createdAt:new Date().toISOString(),
+      updatedAt:new Date().toISOString()
+    };
+    jobs.push(job);
+  }else{
+    job.customer=q.customerName||job.customer;
+    job.owner=q.preparedBy||job.owner;
+    job.phone=q.businessPhone||job.phone;
+    job.jobType=q.jobType||job.jobType;
+    job.address=q.jobAddress||job.address;
+    job.quoteTotal=c.total||0;
+    job.salesTax=c.salesTax||0;
+    job.quoteBeforeTax=c.beforeTax||0;
+    job.updatedAt=new Date().toISOString();
+  }
+  currentBusinessJobId=job.id;
+  localStorage.setItem(BUSINESS_JOBS_KEY,JSON.stringify(jobs));
+  renderBusinessJobList();
+  $('bizJobSelect').value=currentBusinessJobId;
+  renderBusinessJob();
+  setStatus('Current quote saved to Business Only Job Manager.');
+}
+function renderBusinessJobList(){
+  const jobs=getBusinessJobs();
+  const sel=$('bizJobSelect');
+  if(!sel)return;
+  sel.innerHTML='';
+  if(!jobs.length){
+    const o=document.createElement('option');
+    o.value='';o.textContent='No business jobs yet — save a quote first';
+    sel.appendChild(o);
+    currentBusinessJobId='';
+    return;
+  }
+  jobs.slice().sort((a,b)=>(b.updatedAt||'').localeCompare(a.updatedAt||'')).forEach(j=>{
+    const o=document.createElement('option');
+    o.value=j.id;
+    o.textContent=`${j.quoteNumber} — ${j.customer} — ${j.status}`;
+    sel.appendChild(o);
+  });
+  if(!currentBusinessJobId||!jobs.some(j=>j.id===currentBusinessJobId)) currentBusinessJobId=jobs[0].id;
+  sel.value=currentBusinessJobId;
+}
+function selectBusinessJob(id){
+  currentBusinessJobId=id||'';
+  renderBusinessJob();
+}
+function getJobTotals(job){
+  const paid=(job.payments||[]).reduce((s,p)=>s+(Number(p.amount)||0),0);
+  const expenses=(job.expenses||[]).reduce((s,e)=>s+(Number(e.amount)||0),0);
+  const miles=(job.mileage||[]).reduce((s,m)=>s+(Number(m.miles)||0),0);
+  const balance=Math.max((Number(job.quoteTotal)||0)-paid,0);
+  const profit=(Number(job.quoteBeforeTax)||Math.max((Number(job.quoteTotal)||0)-(Number(job.salesTax)||0),0))-expenses;
+  return {paid,expenses,miles,balance,profit};
+}
+function updateBusinessJobStatus(){
+  if(!currentBusinessJobId)return;
+  const jobs=getBusinessJobs(), job=jobs.find(j=>j.id===currentBusinessJobId);
+  if(!job)return;
+  job.status=$('bizJobStatus').value;
+  job.updatedAt=new Date().toISOString();
+  localStorage.setItem(BUSINESS_JOBS_KEY,JSON.stringify(jobs));
+  renderBusinessJobList();
+  $('bizJobSelect').value=currentBusinessJobId;
+  renderBusinessJob();
+}
+function renderBusinessJob(){
+  const job=selectedBusinessJob();
+  const nojob=!job;
+  $('bizJobStatus').disabled=nojob;
+  if(nojob){
+    $('bizJobHeading').textContent='No business job selected. Create a quote, then tap “Save / Update Current Quote as Job.”';
+    ['bizMetricQuote','bizMetricPaid','bizMetricBalance','bizMetricExpenses','bizMetricProfit'].forEach(id=>$(id).textContent='$0.00');
+    $('bizMetricMiles').textContent='0.0';
+    $('bizPaymentsRows').innerHTML='<tr><td colspan="5" class="biz-empty">No job selected.</td></tr>';
+    $('bizExpensesRows').innerHTML='<tr><td colspan="7" class="biz-empty">No job selected.</td></tr>';
+    $('bizMileageRows').innerHTML='<tr><td colspan="4" class="biz-empty">No job selected.</td></tr>';
+    return;
+  }
+
+  $('bizJobStatus').value=job.status||'Quote Sent';
+  $('bizJobHeading').innerHTML=`<strong>${esc(job.quoteNumber)}</strong> • ${esc(job.customer)} • ${esc(job.owner||'')} • ${esc(job.jobType||'')}<br>${esc(job.address||'')}`;
+  const t=getJobTotals(job);
+  $('bizMetricQuote').textContent=money(job.quoteTotal);
+  $('bizMetricPaid').textContent=money(t.paid);
+  $('bizMetricBalance').textContent=money(t.balance);
+  $('bizMetricExpenses').textContent=money(t.expenses);
+  $('bizMetricProfit').textContent=money(t.profit);
+  $('bizMetricMiles').textContent=t.miles.toFixed(1);
+
+  $('bizPaymentsRows').innerHTML=(job.payments&&job.payments.length)
+    ? job.payments.slice().reverse().map(p=>`<tr>
+        <td>${esc(p.date||'')}</td>
+        <td>${money(p.amount)}</td>
+        <td>${esc(p.method||'')}</td>
+        <td>${esc(p.note||'')}</td>
+        <td><button class="danger" type="button" onclick="deleteBusinessEntry('payment','${p.id}')">Delete</button></td>
+      </tr>`).join('')
+    : '<tr><td colspan="5" class="biz-empty">No payments recorded yet.</td></tr>';
+
+  $('bizExpensesRows').innerHTML=(job.expenses&&job.expenses.length)
+    ? job.expenses.slice().reverse().map(e=>`<tr>
+        <td>${esc(e.date||'')}</td>
+        <td>${esc(e.category||'')}</td>
+        <td>${esc(e.vendor||'')}</td>
+        <td>${money(e.amount)}</td>
+        <td>${e.receiptId?`<img class="receipt-thumb" id="receipt-thumb-${e.id}" alt="Receipt" title="Tap to open receipt" onclick="openBusinessReceipt('${e.receiptId}')">`:'—'}</td>
+        <td>${esc(e.note||'')}</td>
+        <td><button class="danger" type="button" onclick="deleteBusinessEntry('expense','${e.id}')">Delete</button></td>
+      </tr>`).join('')
+    : '<tr><td colspan="7" class="biz-empty">No expenses recorded yet.</td></tr>';
+
+  (job.expenses||[]).filter(e=>e.receiptId).forEach(e=>{
+    getBusinessReceipt(e.receiptId).then(data=>{
+      const im=document.getElementById('receipt-thumb-'+e.id);
+      if(im&&data)im.src=data;
+    });
+  });
+
+  $('bizMileageRows').innerHTML=(job.mileage&&job.mileage.length)
+    ? job.mileage.slice().reverse().map(m=>`<tr>
+        <td>${esc(m.date||'')}</td>
+        <td>${Number(m.miles||0).toFixed(1)}</td>
+        <td>${esc(m.purpose||'')}</td>
+        <td><button class="danger" type="button" onclick="deleteBusinessEntry('mileage','${m.id}')">Delete</button></td>
+      </tr>`).join('')
+    : '<tr><td colspan="4" class="biz-empty">No mileage recorded yet.</td></tr>';
+}
+function addBusinessPayment(){
+  const jobs=getBusinessJobs(), job=jobs.find(j=>j.id===currentBusinessJobId);
+  if(!job){alert('Save or select a business job first.');return}
+  const amount=parseFloat($('bizPaymentAmount').value)||0;
+  if(amount<=0){alert('Enter the payment amount.');return}
+  job.payments=job.payments||[];
+  job.payments.push({
+    id:makeBusinessEntryId('pay'),
+    date:$('bizPaymentDate').value||todayISO(),
+    amount,
+    method:$('bizPaymentMethod').value,
+    note:$('bizPaymentNote').value||''
+  });
+  const totals=getJobTotals(job);
+  if(totals.balance<=0.01)job.status='Paid';
+  job.updatedAt=new Date().toISOString();
+  localStorage.setItem(BUSINESS_JOBS_KEY,JSON.stringify(jobs));
+  $('bizPaymentAmount').value=0;$('bizPaymentNote').value='';
+  renderBusinessJobList();$('bizJobSelect').value=currentBusinessJobId;renderBusinessJob();
+}
+function addBusinessExpense(){
+  const jobs=getBusinessJobs(), job=jobs.find(j=>j.id===currentBusinessJobId);
+  if(!job){alert('Save or select a business job first.');return}
+  const amount=parseFloat($('bizExpenseAmount').value)||0;
+  if(amount<=0){alert('Enter the expense amount.');return}
+  const expenseId=makeBusinessEntryId('exp');
+  const file=$('bizExpenseReceipt').files&&$('bizExpenseReceipt').files[0];
+
+  const finish=(receiptId='')=>{
+    job.expenses=job.expenses||[];
+    job.expenses.push({
+      id:expenseId,
+      date:$('bizExpenseDate').value||todayISO(),
+      category:$('bizExpenseCategory').value,
+      amount,
+      vendor:$('bizExpenseVendor').value||'',
+      note:$('bizExpenseNote').value||'',
+      receiptId
+    });
+    job.updatedAt=new Date().toISOString();
+    localStorage.setItem(BUSINESS_JOBS_KEY,JSON.stringify(jobs));
+    $('bizExpenseAmount').value=0;$('bizExpenseVendor').value='';$('bizExpenseNote').value='';$('bizExpenseReceipt').value='';
+    renderBusinessJobList();$('bizJobSelect').value=currentBusinessJobId;renderBusinessJob();
+  };
+
+  if(file){
+    compressBusinessReceipt(file).then(data=>{
+      const receiptId=makeBusinessEntryId('receipt');
+      return saveBusinessReceipt(receiptId,data).then(()=>finish(receiptId));
+    }).catch(()=>{alert('The receipt picture could not be saved. The expense will be saved without the picture.');finish('')});
+  }else finish('');
+}
+function addBusinessMileage(){
+  const jobs=getBusinessJobs(), job=jobs.find(j=>j.id===currentBusinessJobId);
+  if(!job){alert('Save or select a business job first.');return}
+  const miles=parseFloat($('bizMileageMiles').value)||0;
+  if(miles<=0){alert('Enter the business miles.');return}
+  job.mileage=job.mileage||[];
+  job.mileage.push({
+    id:makeBusinessEntryId('mile'),
+    date:$('bizMileageDate').value||todayISO(),
+    miles,
+    purpose:$('bizMileagePurpose').value||''
+  });
+  job.updatedAt=new Date().toISOString();
+  localStorage.setItem(BUSINESS_JOBS_KEY,JSON.stringify(jobs));
+  $('bizMileageMiles').value=0;$('bizMileagePurpose').value='';
+  renderBusinessJobList();$('bizJobSelect').value=currentBusinessJobId;renderBusinessJob();
+}
+function deleteBusinessEntry(type,id){
+  const jobs=getBusinessJobs(), job=jobs.find(j=>j.id===currentBusinessJobId);
+  if(!job)return;
+  if(type==='payment')job.payments=(job.payments||[]).filter(x=>x.id!==id);
+  if(type==='mileage')job.mileage=(job.mileage||[]).filter(x=>x.id!==id);
+  if(type==='expense'){
+    const exp=(job.expenses||[]).find(x=>x.id===id);
+    if(exp&&exp.receiptId)deleteBusinessReceipt(exp.receiptId);
+    job.expenses=(job.expenses||[]).filter(x=>x.id!==id);
+  }
+  job.updatedAt=new Date().toISOString();
+  localStorage.setItem(BUSINESS_JOBS_KEY,JSON.stringify(jobs));
+  renderBusinessJobList();$('bizJobSelect').value=currentBusinessJobId;renderBusinessJob();
+}
+function deleteSelectedBusinessJob(){
+  const job=selectedBusinessJob();
+  if(!job)return;
+  if(!confirm(`Delete business job ${job.quoteNumber} — ${job.customer}?`))return;
+  (job.expenses||[]).forEach(e=>{if(e.receiptId)deleteBusinessReceipt(e.receiptId)});
+  const jobs=getBusinessJobs().filter(j=>j.id!==job.id);
+  localStorage.setItem(BUSINESS_JOBS_KEY,JSON.stringify(jobs));
+  currentBusinessJobId=jobs.length?jobs[0].id:'';
+  renderBusinessJobList();renderBusinessJob();
+}
+function downloadBusinessCSV(){
+  const jobs=getBusinessJobs();
+  if(!jobs.length){alert('No business jobs to download yet.');return}
+  const rows=[['Quote #','Customer','Owner','Job Type','Status','Quote Total','Payments Received','Balance Due','Expenses','Estimated Profit','Business Miles']];
+  jobs.forEach(j=>{
+    const t=getJobTotals(j);
+    rows.push([j.quoteNumber,j.customer,j.owner,j.jobType,j.status,j.quoteTotal,t.paid,t.balance,t.expenses,t.profit,t.miles]);
+  });
+  const csv=rows.map(r=>r.map(v=>`"${String(v??'').replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+  const url=URL.createObjectURL(blob),a=document.createElement('a');
+  a.href=url;a.download='Crosscut_Business_Jobs.csv';document.body.appendChild(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+
+/* Receipt photo storage: IndexedDB keeps receipt images out of the customer quote and separate from job text data. */
+function openBusinessReceiptDB(){
+  return new Promise((resolve,reject)=>{
+    const req=indexedDB.open('CrosscutBusinessOfficeDB',1);
+    req.onupgradeneeded=()=>{const db=req.result;if(!db.objectStoreNames.contains('receipts'))db.createObjectStore('receipts')};
+    req.onsuccess=()=>resolve(req.result);
+    req.onerror=()=>reject(req.error);
+  });
+}
+async function saveBusinessReceipt(id,data){
+  const db=await openBusinessReceiptDB();
+  return new Promise((resolve,reject)=>{
+    const tx=db.transaction('receipts','readwrite');
+    tx.objectStore('receipts').put(data,id);
+    tx.oncomplete=()=>resolve(true);tx.onerror=()=>reject(tx.error);
+  });
+}
+async function getBusinessReceipt(id){
+  try{
+    const db=await openBusinessReceiptDB();
+    return await new Promise((resolve,reject)=>{
+      const tx=db.transaction('receipts','readonly'),req=tx.objectStore('receipts').get(id);
+      req.onsuccess=()=>resolve(req.result||'');req.onerror=()=>reject(req.error);
+    });
+  }catch(e){return ''}
+}
+async function deleteBusinessReceipt(id){
+  try{
+    const db=await openBusinessReceiptDB();
+    const tx=db.transaction('receipts','readwrite');tx.objectStore('receipts').delete(id);
+  }catch(e){}
+}
+function compressBusinessReceipt(file){
+  return new Promise((resolve,reject)=>{
+    const reader=new FileReader();
+    reader.onload=e=>{
+      const img=new Image();
+      img.onload=()=>{
+        const max=1200,scale=Math.min(1,max/Math.max(img.width,img.height));
+        const canvas=document.createElement('canvas');
+        canvas.width=Math.max(1,Math.round(img.width*scale));canvas.height=Math.max(1,Math.round(img.height*scale));
+        canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);
+        resolve(canvas.toDataURL('image/jpeg',0.72));
+      };
+      img.onerror=reject;img.src=e.target.result;
+    };
+    reader.onerror=reject;reader.readAsDataURL(file);
+  });
+}
+async function openBusinessReceipt(id){
+  const data=await getBusinessReceipt(id);
+  if(!data){alert('Receipt image was not found on this device.');return}
+  const w=window.open();
+  if(w)w.document.write(`<title>Receipt</title><body style="margin:0;background:#111;display:grid;place-items:center;min-height:100vh"><img src="${data}" style="max-width:100%;height:auto"></body>`);
+}
+
+
+function getTaxRecords(){
+  try{return JSON.parse(localStorage.getItem('crosscutTaxRecords')||'[]')}catch(e){return []}
+}
+function saveTaxRecords(records){
+  localStorage.setItem('crosscutTaxRecords',JSON.stringify(records));
+  renderTaxTracker();
+}
+function fillTrackerFromQuote(){
+  const c=calculate();
+  $('taxTrackDate').value=todayISO();
+  $('taxTrackIncome').value=(c.beforeTax||0).toFixed(2);
+  $('taxTrackSalesTax').value=(c.salesTax||0).toFixed(2);
+  $('taxTrackExpenses').value=(c.costs||0).toFixed(2);
+  if(!$('taxTrackNotes').value) $('taxTrackNotes').value='Receipts/proof saved as available';
+}
+function recordPaidJob(){
+  const q=allData(), c=calculate();
+  const income=parseFloat($('taxTrackIncome').value)||0;
+  const salesTax=parseFloat($('taxTrackSalesTax').value)||0;
+  const expenses=parseFloat($('taxTrackExpenses').value)||0;
+  const profit=income-expenses;
+  const reservePct=(parseFloat($('federalReservePct').value)||30)/100;
+  const federal=Math.max(profit,0)*reservePct;
+  const quoteNumber=q.quoteNumber||makeQuoteNumber();
+
+  if(income===0 && salesTax===0 && expenses===0){
+    alert('Enter the paid job numbers first, or tap Use Current Quote Numbers.');
+    return;
+  }
+
+  const record={
+    id:quoteNumber+'-'+Date.now(),
+    quoteNumber,
+    customer:q.customerName||'No customer name',
+    preparedBy:q.preparedBy||'',
+    date:$('taxTrackDate').value||todayISO(),
+    income,salesTax,expenses,profit,federal,
+    reservePct,
+    notes:$('taxTrackNotes').value||''
+  };
+
+  const records=getTaxRecords();
+  records.push(record);
+  saveTaxRecords(records);
+  setStatus('Paid job added to the simple tax tracker.');
+}
+function deleteTaxRecord(id){
+  if(!confirm('Remove this paid-job record?'))return;
+  saveTaxRecords(getTaxRecords().filter(r=>r.id!==id));
+}
+function clearTaxTracker(){
+  if(!confirm('Delete ALL saved tax-tracker records from this browser/device?'))return;
+  localStorage.removeItem('crosscutTaxRecords');
+  renderTaxTracker();
+}
+function renderTaxTracker(){
+  const records=getTaxRecords();
+  let income=0,salesTax=0,expenses=0,profit=0,federal=0;
+  records.forEach(r=>{
+    income+=Number(r.income)||0;
+    salesTax+=Number(r.salesTax)||0;
+    expenses+=Number(r.expenses)||0;
+    profit+=Number(r.profit)||0;
+    federal+=Number(r.federal)||0;
+  });
+  $('trackTotalIncome').textContent=money(income);
+  $('trackTotalSalesTax').textContent=money(salesTax);
+  $('trackTotalExpenses').textContent=money(expenses);
+  $('trackTotalProfit').textContent=money(profit);
+  $('trackFederalReserve').textContent=money(federal);
+  $('trackTotalHold').textContent=money(salesTax+federal);
+
+  const body=$('taxRecordRows');
+  body.innerHTML='';
+  if(!records.length){
+    body.innerHTML='<tr><td colspan="8" class="subtle">No paid jobs recorded yet.</td></tr>';
+    return;
+  }
+  [...records].reverse().forEach(r=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`
+      <td>${esc(r.date||'')}</td>
+      <td><strong>${esc(r.quoteNumber||'')}</strong><br>${esc(r.customer||'')}<br><span class="subtle">${esc(r.preparedBy||'')}</span></td>
+      <td>${money(r.income)}</td>
+      <td>${money(r.salesTax)}</td>
+      <td>${money(r.expenses)}</td>
+      <td>${money(r.profit)}</td>
+      <td>${money(r.federal)}</td>
+      <td><button class="danger" type="button" onclick="deleteTaxRecord('${String(r.id).replace(/'/g,"\\'")}')">Delete</button></td>`;
+    body.appendChild(tr);
+  });
+}
+function downloadTaxCSV(){
+  const records=getTaxRecords();
+  if(!records.length){alert('No tax records to download yet.');return}
+  const rows=[
+    ['Date','Quote #','Customer','Prepared By','Income Before Sales Tax','Sales Tax Collected','Business Expenses','Estimated Profit','Federal/SE Reserve','Notes'],
+    ...records.map(r=>[r.date,r.quoteNumber,r.customer,r.preparedBy,r.income,r.salesTax,r.expenses,r.profit,r.federal,r.notes])
+  ];
+  const csv=rows.map(row=>row.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\n');
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download='Crosscut_Tax_Records.csv';
+  document.body.appendChild(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+
+function quickAdd(title,desc){addScopeItem({title,desc,taxable:true})}
+
+function addScopeItem(data={}){
+  itemCounter++;
+  const el=document.createElement('div');
+  el.className='scope-item';
+  el.innerHTML=`
+    <div class="row-between">
+      <div class="scope-title">Scope Item <span class="scopeNum"></span></div>
+      <button class="danger" onclick="this.closest('.scope-item').remove();renumber();recalc()">Remove</button>
+    </div>
+
+    <div class="grid3" style="margin-top:12px">
+      <div>
+        <label>Item Title</label>
+        <input class="itemTitle" placeholder="Example: Replace damaged deck boards">
+      </div>
+      <div>
+        <label>Category</label>
+        <select class="category">
+          <option>Labor & Materials</option><option>Labor Only</option><option>Materials Only</option>
+          <option>Subcontracted Work</option><option>Equipment / Skid Steer</option><option>Other</option>
+        </select>
+      </div>
+      <div class="checkline">
+        <input class="taxable" type="checkbox" checked onchange="recalc()">
+        <label style="margin:0">Taxable Item</label>
+      </div>
+
+      <div style="grid-column:1/-1">
+        <label>Exactly What Customer Is Getting</label>
+        <textarea class="desc" placeholder="Be specific: remove, prep, install, fasten, seal, clean up, haul off, etc."></textarea>
+      </div>
+
+      <div>
+        <label>Labor Price to Customer</label>
+        <input class="laborPrice" type="number" step=".01" min="0" value="0" oninput="recalc()">
+      </div>
+      <div>
+        <label>Materials Price to Customer</label>
+        <input class="materialPrice" type="number" step=".01" min="0" value="0" oninput="recalc()">
+      </div>
+      <div>
+        <label>Equipment / Other Price</label>
+        <input class="otherPrice" type="number" step=".01" min="0" value="0" oninput="recalc()">
+      </div>
+
+      <div>
+        <label>Your Labor Cost <span class="badge">INTERNAL</span></label>
+        <input class="laborCost" type="number" step=".01" min="0" value="0" oninput="recalc()">
+      </div>
+      <div>
+        <label>Your Materials Cost <span class="badge">INTERNAL</span></label>
+        <input class="materialCost" type="number" step=".01" min="0" value="0" oninput="recalc()">
+      </div>
+      <div>
+        <label>Sub / Equipment Cost <span class="badge">INTERNAL</span></label>
+        <input class="otherCost" type="number" step=".01" min="0" value="0" oninput="recalc()">
+      </div>
+
+      <div style="grid-column:span 2">
+        <label>Item Notes / Materials / Finish / Measurements</label>
+        <textarea class="notes" placeholder="Example: Treated lumber, color chosen by customer, approx. dimensions, cleanup included, etc."></textarea>
+      </div>
+      <div>
+        <label>Photos (optional — add multiple)</label>
+        <input class="photoInput" type="file" accept="image/*" multiple onchange="loadPhotos(this)">
+        <div class="subtle" style="margin-top:5px">You can choose several photos at once or come back and add more. Up to 10 photos per scope item.</div>
+        <div class="photo-count">0 photos added</div>
+        <div class="scope-photo-gallery"></div>
+      </div>
+    </div>
+  `;
+  $('scopeItems').appendChild(el);
+
+  el.querySelector('.itemTitle').value=data.title||'';
+  el.querySelector('.category').value=data.category||'Labor & Materials';
+  el.querySelector('.taxable').checked=data.taxable!==false;
+  el.querySelector('.desc').value=data.desc||'';
+  el.querySelector('.laborPrice').value=data.laborPrice||0;
+  el.querySelector('.materialPrice').value=data.materialPrice||0;
+  el.querySelector('.otherPrice').value=data.otherPrice||0;
+  el.querySelector('.laborCost').value=data.laborCost||0;
+  el.querySelector('.materialCost').value=data.materialCost||0;
+  el.querySelector('.otherCost').value=data.otherCost||0;
+  el.querySelector('.notes').value=data.notes||'';
+
+  const savedPhotos = Array.isArray(data.photos)
+    ? data.photos
+    : (data.photo ? [data.photo] : []);
+  savedPhotos.forEach(photo=>addScopePhotoToGallery(el, photo));
+  updateScopePhotoCount(el);
+
+  renumber(); recalc();
+}
+
+function renumber(){document.querySelectorAll('.scopeNum').forEach((x,i)=>x.textContent=i+1)}
+
+function compressScopePhoto(file){
+  return new Promise((resolve,reject)=>{
+    const reader=new FileReader();
+    reader.onload=e=>{
+      const img=new Image();
+      img.onload=()=>{
+        const maxDim=1400;
+        const scale=Math.min(1,maxDim/Math.max(img.width,img.height));
+        const canvas=document.createElement('canvas');
+        canvas.width=Math.max(1,Math.round(img.width*scale));
+        canvas.height=Math.max(1,Math.round(img.height*scale));
+        const ctx=canvas.getContext('2d');
+        ctx.drawImage(img,0,0,canvas.width,canvas.height);
+        resolve(canvas.toDataURL('image/jpeg',0.72));
+      };
+      img.onerror=reject;
+      img.src=e.target.result;
+    };
+    reader.onerror=reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+function addScopePhotoToGallery(scopeEl, dataUrl){
+  const gallery=scopeEl.querySelector('.scope-photo-gallery');
+  const card=document.createElement('div');
+  card.className='scope-photo-card';
+  card.dataset.photo=dataUrl;
+
+  const img=document.createElement('img');
+  img.src=dataUrl;
+  img.alt='Scope photo';
+
+  const remove=document.createElement('button');
+  remove.type='button';
+  remove.className='scope-photo-remove';
+  remove.textContent='×';
+  remove.title='Remove photo';
+  remove.onclick=()=>{
+    card.remove();
+    updateScopePhotoCount(scopeEl);
+    buildPreview();
+  };
+
+  card.appendChild(img);
+  card.appendChild(remove);
+  gallery.appendChild(card);
+}
+
+function updateScopePhotoCount(scopeEl){
+  const count=scopeEl.querySelectorAll('.scope-photo-card').length;
+  const label=scopeEl.querySelector('.photo-count');
+  if(label)label.textContent=count===1?'1 photo added':`${count} photos added`;
+}
+
+async function loadPhotos(inp){
+  const files=[...(inp.files||[])];
+  if(!files.length)return;
+
+  const scopeEl=inp.closest('.scope-item');
+  const existing=scopeEl.querySelectorAll('.scope-photo-card').length;
+  const remaining=Math.max(0,10-existing);
+
+  if(remaining===0){
+    alert('This scope item already has 10 photos. Remove one before adding another.');
+    inp.value='';
+    return;
+  }
+
+  const chosen=files.slice(0,remaining);
+  if(files.length>remaining){
+    alert(`Only ${remaining} more photo${remaining===1?'':'s'} can be added to this scope item.`);
+  }
+
+  for(const file of chosen){
+    try{
+      const compressed=await compressScopePhoto(file);
+      addScopePhotoToGallery(scopeEl,compressed);
+    }catch(e){
+      alert(`Could not add ${file.name||'one of the photos'}.`);
+    }
+  }
+
+  inp.value='';
+  updateScopePhotoCount(scopeEl);
+  buildPreview();
+}
+
+function scopeData(){
+  return [...document.querySelectorAll('.scope-item')].map(el=>({
+    title:el.querySelector('.itemTitle').value,
+    category:el.querySelector('.category').value,
+    taxable:el.querySelector('.taxable').checked,
+    desc:el.querySelector('.desc').value,
+    laborPrice:+el.querySelector('.laborPrice').value||0,
+    materialPrice:+el.querySelector('.materialPrice').value||0,
+    otherPrice:+el.querySelector('.otherPrice').value||0,
+    laborCost:+el.querySelector('.laborCost').value||0,
+    materialCost:+el.querySelector('.materialCost').value||0,
+    otherCost:+el.querySelector('.otherCost').value||0,
+    notes:el.querySelector('.notes').value,
+    photos:[...el.querySelectorAll('.scope-photo-card')].map(card=>card.dataset.photo).filter(Boolean)
+  }))
+}
+
+function calculate(){
+  const items=scopeData();
+  const rawSubtotal=items.reduce((s,x)=>s+x.laborPrice+x.materialPrice+x.otherPrice,0);
+  const overhead=rawSubtotal*((+($('overheadPct').value)||0)/100);
+  const discount=Math.min(+($('discount').value)||0,rawSubtotal+overhead);
+  const beforeTax=Math.max(rawSubtotal+overhead-discount,0);
+
+  let taxableBase;
+  if($('taxMode').value==='all'){
+    taxableBase=beforeTax;
+  }else{
+    const taxableItems=items.filter(x=>x.taxable).reduce((s,x)=>s+x.laborPrice+x.materialPrice+x.otherPrice,0);
+    const taxableShare=rawSubtotal>0 ? taxableItems/rawSubtotal : 0;
+    taxableBase=Math.max((taxableItems + overhead*taxableShare - discount*taxableShare),0);
+  }
+
+  const salesTax=taxableBase*currentTaxRate();
+  const total=beforeTax+salesTax;
+
+  let deposit=0;
+  const depVal=+($('depositValue').value)||0;
+  if($('depositType').value==='percent') deposit=total*(depVal/100);
+  else deposit=depVal;
+  deposit=Math.min(Math.max(deposit,0),total);
+  const balance=Math.max(total-deposit,0);
+
+  const costs=items.reduce((s,x)=>s+x.laborCost+x.materialCost+x.otherCost,0);
+  const grossProfit=beforeTax-costs;
+  const reserve=Math.max(grossProfit,0)*((+($('federalReservePct').value)||0)/100);
+  const after=grossProfit-reserve;
+  const margin=beforeTax>0?(grossProfit/beforeTax)*100:0;
+
+  return {items,rawSubtotal,overhead,discount,beforeTax,taxableBase,salesTax,total,deposit,balance,costs,grossProfit,reserve,after,margin};
+}
+
+function recalc(){
+  const c=calculate();
+  $('uiSubtotal').textContent=money(c.rawSubtotal);
+  $('uiOverhead').textContent=money(c.overhead);
+  $('uiDiscount').textContent='-'+money(c.discount);
+  $('uiTaxable').textContent=money(c.taxableBase);
+  $('uiSalesTax').textContent=money(c.salesTax);
+  $('uiTotal').textContent=money(c.total);
+  $('uiDeposit').textContent=money(c.deposit);
+  $('uiBalance').textContent=money(c.balance);
+  $('uiCosts').textContent=money(c.costs);
+  $('uiProfit').textContent=money(c.grossProfit);
+  $('uiFederal').textContent=money(c.reserve);
+  $('uiAfter').textContent=money(c.after);
+  $('uiMargin').textContent=c.margin.toFixed(1)+'%';
+  buildPreview();
+}
+
+function allData(){
+  return {
+    quoteProfile:$('quoteProfile').value, businessName:$('businessName').value, preparedBy:$('preparedBy').value,
+    businessPhone:$('businessPhone').value, businessEmail:$('businessEmail').value,
+    quoteNumber:$('quoteNumber').value, quoteDate:$('quoteDate').value,
+    validDays:$('validDays').value, quoteStatus:$('quoteStatus').value,
+    startDate:$('startDate').value, completionDate:$('completionDate').value,
+    duration:$('duration').value, warranty:$('warranty').value,
+    customerName:$('customerName').value, customerPhone:$('customerPhone').value,
+    customerEmail:$('customerEmail').value, jobType:$('jobType').value, jobAddress:$('jobAddress').value,
+    included:$('included').value, excluded:$('excluded').value,
+    customerResponsibilities:$('customerResponsibilities').value, cleanup:$('cleanup').value,
+    overheadPct:$('overheadPct').value, discount:$('discount').value,
+    taxPreset:$('taxPreset').value, customTaxPct:$('customTaxPct').value,
+    taxMode:$('taxMode').value, depositType:$('depositType').value, depositValue:$('depositValue').value,
+    federalReservePct:$('federalReservePct').value, paymentTerms:$('paymentTerms').value,
+    paymentMethods:$('paymentMethods').value, changeOrder:$('changeOrder').value, terms:$('terms').value,
+    items:scopeData()
+  };
+}
+
+function applyData(q){
+  const inferredProfile=q.quoteProfile||((q.preparedBy||'').toLowerCase().includes('brittany')?'brittany':'alex');
+  applyQuoteProfile(inferredProfile,false,q.jobType||'');
+
+  const ids=['businessName','businessEmail','quoteNumber','quoteDate','validDays',
+    'quoteStatus','startDate','completionDate','duration','warranty','customerName','customerPhone','customerEmail',
+    'jobAddress','included','excluded','customerResponsibilities','cleanup','overheadPct','discount',
+    'taxPreset','customTaxPct','taxMode','depositType','depositValue','federalReservePct','paymentTerms',
+    'paymentMethods','changeOrder','terms'];
+  ids.forEach(id=>{if(q[id]!==undefined&&$(id))$(id).value=q[id]});
+  renderJobTypes(inferredProfile,q.jobType||'');
+
+  $('scopeItems').innerHTML=''; itemCounter=0;
+  (q.items||[]).forEach(addScopeItem);
+  if(!(q.items||[]).length)addScopeItem();
+  taxPresetChanged(); recalc();
+}
+
+function buildPreview(){
+  const q=allData(), c=calculate(), taxRate=currentTaxRate()*100;
+  const itemRows=c.items.length?c.items.map((x,i)=>{
+    const price=x.laborPrice+x.materialPrice+x.otherPrice;
+    return `
+      <tr>
+        <td style="width:42px">${i+1}</td>
+        <td>
+          <strong>${esc(x.title||'Scope item')}</strong>
+          ${x.desc?`<div style="margin-top:4px">${esc(x.desc).replace(/\n/g,'<br>')}</div>`:''}
+          ${x.notes?`<div class="muted" style="margin-top:5px">${esc(x.notes).replace(/\n/g,'<br>')}</div>`:''}
+          ${(Array.isArray(x.photos)&&x.photos.length)?`
+            <div class="doc-photo-grid">
+              ${x.photos.map((photo,pIndex)=>`<img class="doc-photo" src="${photo}" alt="Scope photo ${pIndex+1}">`).join('')}
+            </div>`:''}
+        </td>
+        <td class="right" style="width:125px">${money(price)}</td>
+      </tr>`;
+  }).join(''):`<tr><td colspan="3">No scope items entered.</td></tr>`;
+
+  const infoPills=[
+    q.startDate?`Start: ${esc(q.startDate)}`:'',
+    q.completionDate?`Completion: ${esc(q.completionDate)}`:'',
+    q.duration?`Duration: ${esc(q.duration)}`:'',
+    q.warranty?`Warranty: ${esc(q.warranty)}`:''
+  ].filter(Boolean).map(x=>`<span class="pill">${x}</span>`).join('');
+
+  $('printQuote').innerHTML=`
+    <div class="doc-head">
+      <div>
+        <img src="logo.png" class="quote-logo" alt="Crosscut Productions LLC logo">
+        <div class="doc-company">${esc(q.businessName)}</div>
+        <div>${esc(q.businessPhone)}</div>
+        <div>${esc(q.businessEmail)}</div>
+        <div class="muted">Prepared by ${esc(q.preparedBy)}</div>
+      </div>
+      <div>
+        <div class="doc-title">QUOTE</div>
+        <div><strong>Quote #:</strong> ${esc(q.quoteNumber)}</div>
+        <div><strong>Date:</strong> ${esc(q.quoteDate)}</div>
+        <div><strong>Valid:</strong> ${esc(q.validDays)} days</div>
+      </div>
+    </div>
+
+    <div class="grid2" style="margin-bottom:16px">
+      <div class="customer-box">
+        <strong>Customer</strong><br>
+        ${esc(q.customerName)}<br>
+        ${esc(q.customerPhone)}<br>
+        ${esc(q.customerEmail)}
+      </div>
+      <div class="customer-box">
+        <strong>Job</strong><br>
+        ${esc(q.jobType)}<br>
+        ${esc(q.jobAddress)}
+      </div>
+    </div>
+
+    ${infoPills?`<div style="margin-bottom:14px">${infoPills}</div>`:''}
+
+    <div class="strongbox">
+      <strong>What this quote covers:</strong>
+      <div style="margin-top:7px">The work listed below is the agreed scope. Anything not listed is not included unless added by approved change order.</div>
+    </div>
+
+    <h3>Scope of Work</h3>
+    <table>
+      <thead><tr><th>#</th><th>Description</th><th class="right">Price</th></tr></thead>
+      <tbody>${itemRows}</tbody>
+    </table>
+
+    <div class="grid2 preview-section">
+      <div>
+        ${q.included?`<h3>Included</h3><div class="terms">${esc(q.included)}</div>`:''}
+        ${q.customerResponsibilities?`<h3>Customer Responsibilities</h3><div class="terms">${esc(q.customerResponsibilities)}</div>`:''}
+        ${q.cleanup?`<h3>Cleanup / Disposal</h3><div class="terms">${esc(q.cleanup)}</div>`:''}
+      </div>
+      <div>
+        ${q.excluded?`<h3>Not Included / Exclusions</h3><div class="terms">${esc(q.excluded)}</div>`:''}
+        ${q.warranty?`<h3>Warranty</h3><div>${esc(q.warranty)}</div>`:''}
+      </div>
+    </div>
+
+    <div style="max-width:440px;margin-left:auto;margin-top:22px">
+      <table>
+        <tr><td>Scope subtotal</td><td class="right">${money(c.rawSubtotal)}</td></tr>
+        ${c.overhead?`<tr><td>Operational / overhead</td><td class="right">${money(c.overhead)}</td></tr>`:''}
+        ${c.discount?`<tr><td>Discount</td><td class="right">-${money(c.discount)}</td></tr>`:''}
+        <tr><td>Sales tax (${taxRate.toFixed(2).replace(/\.00$/,'')}%)</td><td class="right">${money(c.salesTax)}</td></tr>
+        <tr><td><strong>Total</strong></td><td class="right" style="font-size:21px"><strong>${money(c.total)}</strong></td></tr>
+        ${c.deposit?`<tr><td>Deposit requested</td><td class="right">${money(c.deposit)}</td></tr>
+        <tr><td><strong>Balance after deposit</strong></td><td class="right"><strong>${money(c.balance)}</strong></td></tr>`:''}
+      </table>
+    </div>
+
+    <h3 style="margin-top:26px">Payment Terms</h3>
+    <div>${esc(q.paymentTerms)}</div>
+    <div class="muted" style="margin-top:4px">Accepted payment methods: ${esc(q.paymentMethods)}</div>
+
+    <h3 style="margin-top:22px">Change Orders</h3>
+    <div class="terms">${esc(q.changeOrder)}</div>
+
+    <h3 style="margin-top:22px">General Terms</h3>
+    <div class="terms">${esc(q.terms)}</div>
+
+    <div class="strongbox" style="margin-top:24px">
+      <strong>Customer Approval</strong>
+      <div style="margin-top:6px">By signing below, the customer approves the scope, pricing, payment terms, and conditions shown on this quote.</div>
+    </div>
+
+    <div class="signatures">
+      <div><div class="sigline">Customer Signature</div></div>
+      <div><div class="sigline">Date</div></div>
+    </div>
+  `;
+}
+
+function saveQuote(){
+  if(!$('quoteNumber').value)$('quoteNumber').value=makeQuoteNumber();
+  const q=allData();
+  const all=JSON.parse(localStorage.getItem('crosscutProQuotes')||'{}');
+  all[q.quoteNumber]=q;
+  try{
+    localStorage.setItem('crosscutProQuotes',JSON.stringify(all));
+    refreshSaved(q.quoteNumber);
+    setStatus('Saved '+q.quoteNumber);
+  }catch(e){
+    alert('This browser is running out of storage for saved quote photos. The quote is still on screen, but it could not be saved. Remove a few scope photos or download/print the quote before leaving this page.');
+  }
+}
+function refreshSaved(select=''){
+  const all=JSON.parse(localStorage.getItem('crosscutProQuotes')||'{}');
+  const sel=$('savedQuotes'); sel.innerHTML='';
+  const keys=Object.keys(all).sort().reverse();
+  if(!keys.length){
+    const o=document.createElement('option');o.value='';o.textContent='No saved quotes';sel.appendChild(o);return;
+  }
+  keys.forEach(k=>{
+    const o=document.createElement('option');o.value=k;
+    o.textContent=k+(all[k].customerName?' — '+all[k].customerName:'');
+    sel.appendChild(o);
+  });
+  if(select&&all[select])sel.value=select;
+}
+function loadSelected(){
+  const k=$('savedQuotes').value;if(!k)return;
+  const all=JSON.parse(localStorage.getItem('crosscutProQuotes')||'{}');
+  if(all[k]){applyData(all[k]);setStatus('Loaded '+k)}
+}
+function deleteSelected(){
+  const k=$('savedQuotes').value;if(!k)return;
+  if(!confirm('Delete '+k+'?'))return;
+  const all=JSON.parse(localStorage.getItem('crosscutProQuotes')||'{}');
+  delete all[k];localStorage.setItem('crosscutProQuotes',JSON.stringify(all));refreshSaved();setStatus('Deleted '+k);
+}
+function duplicateQuote(){
+  const q=allData();
+  q.quoteNumber=makeQuoteNumber();q.quoteDate=todayISO();q.quoteStatus='Draft';
+  applyData(q);saveQuote();setStatus('Duplicated as '+q.quoteNumber);
+}
+function duplicateSelected(){
+  const k=$('savedQuotes').value;if(!k)return;
+  const all=JSON.parse(localStorage.getItem('crosscutProQuotes')||'{}');
+  if(!all[k])return;
+  const q=JSON.parse(JSON.stringify(all[k]));
+  q.quoteNumber=makeQuoteNumber();q.quoteDate=todayISO();q.quoteStatus='Draft';
+  applyData(q);saveQuote();
+}
+function newQuote(){
+  if(!confirm('Start a new quote? Save first if you want to keep current changes.'))return;
+  const activeProfile=$('quoteProfile').value||'alex';
+  $('quoteNumber').value=makeQuoteNumber();$('quoteDate').value=todayISO();$('validDays').value=30;$('quoteStatus').value='Draft';
+  ['startDate','completionDate','duration','warranty','customerName','customerPhone','customerEmail','jobAddress','included','excluded','customerResponsibilities','cleanup'].forEach(id=>$(id).value='');
+  applyQuoteProfile(activeProfile,false);
+  $('jobType').selectedIndex=0;$('overheadPct').value=0;$('discount').value=0;$('taxPreset').value='6';$('customTaxPct').value=6;
+  $('taxMode').value='items';$('depositType').value='dollar';$('depositValue').value=0;$('federalReservePct').value=30;
+  $('scopeItems').innerHTML='';itemCounter=0;addScopeItem();taxPresetChanged();recalc();setStatus('New quote started');
+}
+function setStatus(t){$('status').textContent=t;clearTimeout(window._st);window._st=setTimeout(()=>$('status').textContent='',3000)}
+
+document.addEventListener('input',e=>{if(e.target.matches('input,textarea,select'))buildPreview()});
+$('quoteDate').value=todayISO();
+$('quoteNumber').value=makeQuoteNumber();
+applyQuoteProfile('alex',false);
+addScopeItem();
+refreshSaved();
+taxPresetChanged();
+recalc();
+$('taxTrackDate').value=todayISO();
+renderTaxTracker();
+$('bizPaymentDate').value=todayISO();
+$('bizExpenseDate').value=todayISO();
+$('bizMileageDate').value=todayISO();
+renderBusinessJobList();
+renderBusinessJob();
+</script>
+
+<div class="no-print" id="customerPrintBar" style="
+  position:fixed;
+  left:12px;
+  right:12px;
+  bottom:12px;
+  z-index:9999;
+  display:flex;
+  gap:10px;
+  justify-content:center;
+  align-items:center;
+  background:rgba(14,18,23,.96);
+  border:1px solid #394451;
+  border-radius:14px;
+  padding:10px;
+  box-shadow:0 10px 30px rgba(0,0,0,.35);
+">
+  <button onclick="document.getElementById('printQuote').scrollIntoView({behavior:'smooth'})"
+          style="flex:1;max-width:260px;background:#203d60;border-color:#325a88;">
+    Preview Customer Quote
+  </button>
+  <button onclick="printCustomerQuote()"
+          style="flex:1;max-width:320px;background:#d4a64a;color:#111;border-color:#d4a64a;">
+    Print / Save Customer Quote PDF
+  </button>
+</div>
+
+
+<script>
+function printCustomerQuote(){
+  buildPreview();
+  setTimeout(function(){
+    window.print();
+  }, 150);
+}
+</script>
+
+</body>
+</html>
